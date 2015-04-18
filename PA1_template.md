@@ -135,8 +135,8 @@ ggplot(actByDate, aes(x=tStepF)) +
 
 #### Calculate and report the mean and median total number of steps taken per day. 
 
-* mean steps per day = **10765.64**.
-* median steps per day = **10762**.
+* mean (with imputed values) steps per day = **10765.64**.
+* median (with imputed values) steps per day = **10762**.
 
 #### What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -144,7 +144,8 @@ ggplot(actByDate, aes(x=tStepF)) +
 
 * The imputed median is very slightly lower. Another rounding effect. 
 
-#### Are there differences in activity patterns between weekdays and weekends?
+#### Weekdays / Weekends
+
 
 ```r
 # Create a new factor variable - "weekday" and "weekend" 
@@ -155,18 +156,20 @@ act$weekend <- ifelse(weekend, 'weekend', 'weekday')
 #### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 ```r
-actByWeekend <- act %>% group_by(interval, weekend) %>% summarize(meanStep=mean(stepFill))
+actByWeekend <- act %>% group_by(min, weekend) %>% summarize(meanStep=mean(stepFill))
 
 meanE <- mean(actByWeekend[actByWeekend$weekend=='weekend', ]$meanStep)
 meanD <- mean(actByWeekend[actByWeekend$weekend=='weekday', ]$meanStep)
-ggplot(actByWeekend, aes(x=interval, y=meanStep)) +
+ggplot(actByWeekend, aes(x=min/5, y=meanStep)) +
   geom_line() + facet_grid(weekend ~ .) +
-  labs(x="interval", y="steps")
+  labs(x="5 min intervals", y="steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
 
-Average steps per interval at the weekend is **42**, wich is higher than the **36** average on weekdays. But peak steps is higher on weekday mornings. 
+#### Are there differences in activity patterns between weekdays and weekends?
+
+Average steps per interval at the weekend is **42**, which is higher than the **36** average on weekdays. But peak steps is higher on weekday mornings. 
 
 
 
